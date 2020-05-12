@@ -20,10 +20,9 @@ fn main() {
                 0.2
             );
 
-            // TODO Implement [] operator
-            let ir = (255.99 * col.r()) as i32;
-            let ig = (255.99 * col.y()) as i32;
-            let ib = (255.99 * col.z()) as i32;
+            let ir = (255.99 * col[0]) as i32;
+            let ig = (255.99 * col[1]) as i32;
+            let ib = (255.99 * col[2]) as i32;
 
             let row = format!("{:.0} {:.0} {:.0}\n", ir, ig, ib);
             file.write(row.as_bytes()).unwrap();

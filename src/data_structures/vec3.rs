@@ -1,4 +1,5 @@
 use std::f32;
+use std::ops;
 
 #[derive(Debug, Default)]
 pub struct Vec3 {
@@ -34,5 +35,57 @@ impl Vec3 {
         for val in &mut self.e {
             *val /= k;
         }
+    }
+}
+
+impl ops::Index<usize> for Vec3 {
+    type Output = f32;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        if index > 2 {
+            panic!("Invalid array access");
+        }
+        &self.e[index]
+    }
+}
+
+impl std::cmp::PartialEq for Vec3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.e == other.e
+    }
+}
+
+impl ops::AddAssign for Vec3 {
+    fn add_assign(&mut self, other: Self) {
+        *self = Self {
+            e: [ self.e[0] + other.e[0], self.e[1] + other.e[1], self.e[2] + other.e[2] ]
+        }
+    }
+}
+
+impl ops::SubAssign for Vec3 {
+    fn sub_assign(&mut self, other: Self) {
+        *self = Self {
+            e: [ self.e[0] - other.e[0], self.e[1] - other.e[1], self.e[2] - other.e[2] ]
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Vec3;
+
+    #[test]
+    fn it_add_assigns() {
+        let mut vec3 = Vec3::new(1.0, 1.0, 1.0);
+        vec3 += Vec3::new(1.0, 1.0, 1.0);
+        assert_eq!(vec3, Vec3::new(2.0, 2.0, 2.0));
+    }
+
+    #[test]
+    fn it_sub_assigns() {
+        let mut vec3 = Vec3::new(1.0, 1.0, 1.0);
+        vec3 -= Vec3::new(1.0, 1.0, 1.0);
+        assert_eq!(vec3, Vec3::new(0.0, 0.0, 0.0));
     }
 }
