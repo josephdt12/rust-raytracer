@@ -73,6 +73,16 @@ impl ops::Add for Vec3 {
     }
 }
 
+impl ops::Sub for Vec3 {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self {
+        Self {
+            e: [ self[0] - other[0], self[1] - other[1], self[2] - other[2] ]
+        }
+    }
+}
+
 impl ops::Mul<f32> for Vec3 {
     type Output = Self;
 
