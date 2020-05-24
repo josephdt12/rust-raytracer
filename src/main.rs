@@ -6,13 +6,37 @@ use data_structures::Ray;
 use data_structures::Vec3;
 
 fn color(r: &Ray) -> Vec3 {
+    let center = Vec3::new(0.0, 0.0, -1.0);
+    let radius = 0.5;
+
+    let t = hit_sphere(&center, radius, r);
+    if t > 0.0 {
+        let normal = Vec3::unit_vector(&(r.point_at_parameter(t) - Vec3::new(0.0, 0.0, -1.0)));
+        return Vec3::new(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
+    }
+
     let unit_direction = Vec3::unit_vector(r.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
     Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
 }
+ 
+// Checks if a ray is hitting a given sphere
+fn hit_sphere(center: &Vec3, radius: f32, ray: &Ray) -> f32 {
+    let ray_to_center = *ray.origin() - *center;
+    let a = Vec3::dot(ray.direction(), ray.direction());
+    let b = 2.0 * Vec3::dot(&ray_to_center, ray.direction());
+    let c = Vec3::dot(&ray_to_center, &ray_to_center) - radius * radius;
+    let discriminant = b * b - a * 4.0 * c;
+
+    if discriminant < 0.0 {
+        return -1.0;
+    } else {
+        return (-b - discriminant.sqrt()) / (2.0 * a)
+    }
+}
 
 fn main() {
-    let mut file = File::create("test.txt").unwrap();
+    let mut file = File::create("test.ppm").unwrap();
 
     let nx = 200;
     let ny = 100;
