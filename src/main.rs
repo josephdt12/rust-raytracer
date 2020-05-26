@@ -1,37 +1,29 @@
 use std::io::Write;
 use std::fs::File;
+use std::f32;
 
 mod data_structures;
 use data_structures::Ray;
 use data_structures::Vec3;
+use data_structures::Sphere;
 
-fn color(r: &Ray) -> Vec3 {
-    let center = Vec3::new(0.0, 0.0, -1.0);
-    let radius = 0.5;
+use data_structures::Hit;
+use data_structures::HitRecord;
+use data_structures::HitableList;
 
-    let t = hit_sphere(&center, radius, r);
-    if t > 0.0 {
-        let normal = Vec3::unit_vector(&(r.point_at_parameter(t) - Vec3::new(0.0, 0.0, -1.0)));
-        return Vec3::new(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5;
-    }
+fn color(r: &Ray, world: &HitableList) -> Vec3 {
+    let mut rec = HitRecord::default();
 
-    let unit_direction = Vec3::unit_vector(r.direction());
-    let t = 0.5 * (unit_direction.y() + 1.0);
-    Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t
-}
- 
-// Checks if a ray is hitting a given sphere
-fn hit_sphere(center: &Vec3, radius: f32, ray: &Ray) -> f32 {
-    let ray_to_center = *ray.origin() - *center;
-    let a = Vec3::dot(ray.direction(), ray.direction());
-    let b = 2.0 * Vec3::dot(&ray_to_center, ray.direction());
-    let c = Vec3::dot(&ray_to_center, &ray_to_center) - radius * radius;
-    let discriminant = b * b - a * 4.0 * c;
-
-    if discriminant < 0.0 {
-        return -1.0;
+    if world.hit(r, 0.0, f32::MAX, &mut rec) {
+        return Vec3::new(
+            rec.normal.x() + 1.0,
+            rec.normal.y() + 1.0,
+            rec.normal.z() + 1.0,
+        ) * 0.5;
     } else {
-        return (-b - discriminant.sqrt()) / (2.0 * a)
+        let unit_direction = Vec3::unit_vector(r.direction());
+        let t = 0.5 * (unit_direction.y() + 1.0);
+        return Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + Vec3::new(0.5, 0.7, 1.0) * t;
     }
 }
 
@@ -49,13 +41,18 @@ fn main() {
     let vertical = Vec3::new(0.0, 2.0, 0.0);
     let origin = Vec3::new(0.0, 0.0, 0.0);
 
+    let list = HitableList::new(vec![
+        Box::new(Sphere::new(&Vec3::new(0.0, 0.0, -1.0), 0.5)),
+        Box::new(Sphere::new(&Vec3::new(0.0, -100.5, -1.0), 100.0)),
+    ]);
+
     for j in (0..ny - 1).rev() {
         for i in 0..nx {
             let u = i as f32 / nx as f32;
             let v = j as f32 / ny as f32;
             let r = Ray::new(origin, lower_left_corner + horizontal * u + vertical * v);
 
-            let col = color(&r);
+            let col = color(&r, &list);
             let ir = (255.99 * col[0]) as i32;
             let ig = (255.99 * col[1]) as i32;
             let ib = (255.99 * col[2]) as i32;
