@@ -1,15 +1,19 @@
 use std::io::Write;
 use std::fs::File;
 use std::f32;
+use rand::*;
 
-mod data_structures;
-use data_structures::Ray;
-use data_structures::Vec3;
-use data_structures::Sphere;
-
-use data_structures::Hit;
-use data_structures::HitRecord;
-use data_structures::HitableList;
+// TODO These need to be cleaned up logically
+mod ray;
+use ray::Ray;
+mod sphere;
+use sphere::Sphere;
+mod vec3;
+use vec3::Vec3;
+mod hitable;
+use hitable::{Hit, HitRecord, HitableList};
+mod camera;
+use camera::Camera;
 
 fn color(r: &Ray, world: &HitableList) -> Vec3 {
     let mut rec = HitRecord::default();
@@ -27,32 +31,42 @@ fn color(r: &Ray, world: &HitableList) -> Vec3 {
     }
 }
 
+fn drand48() -> f32 {
+    let rand_float: f32 = rand::thread_rng().gen();
+    rand_float
+}
+
 fn main() {
     let mut file = File::create("test.ppm").unwrap();
 
     let nx = 200;
     let ny = 100;
+    let ns: i32 = 100;
 
     let header = format!("P3\n{} {}\n255\n", nx, ny);
     file.write(header.as_bytes()).unwrap();
-
-    let lower_left_corner = Vec3::new(-2.0, -1.0, -1.0);
-    let horizontal = Vec3::new(4.0, 0.0, 0.0);
-    let vertical = Vec3::new(0.0, 2.0, 0.0);
-    let origin = Vec3::new(0.0, 0.0, 0.0);
 
     let list = HitableList::new(vec![
         Box::new(Sphere::new(&Vec3::new(0.0, 0.0, -1.0), 0.5)),
         Box::new(Sphere::new(&Vec3::new(0.0, -100.5, -1.0), 100.0)),
     ]);
 
+    let cam = Camera::new();
+
+    let mut rng = rand::thread_rng();
     for j in (0..ny - 1).rev() {
         for i in 0..nx {
-            let u = i as f32 / nx as f32;
-            let v = j as f32 / ny as f32;
-            let r = Ray::new(origin, lower_left_corner + horizontal * u + vertical * v);
+            let mut col = Vec3::new(0.0, 0.0, 0.0);
+            for s in 0..ns {
+                let u: f32 = (i as f32 + rand::random::<f32>()) / nx as f32;
+                let v: f32 = (j as f32 + rand::random::<f32>()) / ny as f32;
 
-            let col = color(&r, &list);
+                let r = cam.get_ray(u, v);
+                let p: Vec3 = r.point_at_parameter(2.0);
+                col += color(&r, &list);
+            }
+
+            col /= ns as f32;
             let ir = (255.99 * col[0]) as i32;
             let ig = (255.99 * col[1]) as i32;
             let ib = (255.99 * col[2]) as i32;

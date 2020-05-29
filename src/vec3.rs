@@ -123,6 +123,15 @@ impl ops::SubAssign for Vec3 {
     }
 }
 
+impl ops::DivAssign<f32> for Vec3 {
+    fn div_assign(&mut self, rhs: f32) {
+        let k = 1.0 / rhs;
+        self.e[0] *= k;
+        self.e[1] *= k;
+        self.e[2] *= k;
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Vec3;
