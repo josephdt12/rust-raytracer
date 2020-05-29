@@ -1,7 +1,6 @@
 use std::io::Write;
 use std::fs::File;
 use std::f32;
-use rand::*;
 
 // TODO These need to be cleaned up logically
 mod ray;
@@ -31,11 +30,6 @@ fn color(r: &Ray, world: &HitableList) -> Vec3 {
     }
 }
 
-fn drand48() -> f32 {
-    let rand_float: f32 = rand::thread_rng().gen();
-    rand_float
-}
-
 fn main() {
     let mut file = File::create("test.ppm").unwrap();
 
@@ -53,16 +47,15 @@ fn main() {
 
     let cam = Camera::new();
 
-    let mut rng = rand::thread_rng();
     for j in (0..ny - 1).rev() {
         for i in 0..nx {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
-            for s in 0..ns {
+            for _s in 0..ns {
                 let u: f32 = (i as f32 + rand::random::<f32>()) / nx as f32;
                 let v: f32 = (j as f32 + rand::random::<f32>()) / ny as f32;
 
                 let r = cam.get_ray(u, v);
-                let p: Vec3 = r.point_at_parameter(2.0);
+                let _p: Vec3 = r.point_at_parameter(2.0);
                 col += color(&r, &list);
             }
 
