@@ -37,7 +37,7 @@ fn main() {
 
     let nx = 200;
     let ny = 100;
-    let ns: i32 = 100;
+    let ns: isize = 100;
 
     let header = format!("P3\n{} {}\n255\n", nx, ny);
     file.write(header.as_bytes()).unwrap();
@@ -63,9 +63,9 @@ fn main() {
             }
 
             col /= ns as f64;
-            let ir = (255.99 * col[0]) as i32;
-            let ig = (255.99 * col[1]) as i32;
-            let ib = (255.99 * col[2]) as i32;
+            let ir = (255.99 * col[0]) as isize;
+            let ig = (255.99 * col[1]) as isize;
+            let ib = (255.99 * col[2]) as isize;
 
             let row = format!("{:.0} {:.0} {:.0}\n", ir, ig, ib);
             file.write(row.as_bytes()).unwrap();
