@@ -1,6 +1,7 @@
 use std::io::Write;
 use std::fs::File;
-use std::f32;
+use std::f64;
+use rand::Rng;
 
 use raytracer::structures::ray::Ray;
 use raytracer::structures::vec3::Vec3;
@@ -9,8 +10,9 @@ use raytracer::objects::hitable::{Hit, HitRecord, HitableList};
 use raytracer::objects::camera::Camera;
 
 fn random_in_unit_sphere() -> Vec3 {
+    let mut rng = rand::thread_rng();
     loop {
-        let p: Vec3 = Vec3::new(rand::random::<f32>(), rand::random::<f32>(), rand::random::<f32>()) -
+        let p: Vec3 = Vec3::new(rng.gen::<f64>(), rng.gen::<f64>(), rng.gen::<f64>()) -
                     Vec3::new(1.0, 1.0, 1.0);
         if p.squared_length() < 1.0 { return p; }
     }
@@ -19,7 +21,7 @@ fn random_in_unit_sphere() -> Vec3 {
 fn color(r: &Ray, world: &HitableList) -> Vec3 {
     let mut rec = HitRecord::default();
 
-    if world.hit(r, 0.0, f32::MAX, &mut rec) {
+    if world.hit(r, 0.0001, f64::MAX, &mut rec) {
         let target: Vec3 = rec.p + rec.normal + random_in_unit_sphere();
         return color(&Ray::new(rec.p, target - rec.p), world) * 0.5;
     } else {
@@ -30,6 +32,7 @@ fn color(r: &Ray, world: &HitableList) -> Vec3 {
 }
 
 fn main() {
+    let mut rng = rand::thread_rng();
     let mut file = File::create("test.ppm").unwrap();
 
     let nx = 200;
@@ -47,18 +50,19 @@ fn main() {
     let cam = Camera::new();
 
     for j in (0..ny - 1).rev() {
+        if j % 30 == 0 { println!("Y: {}", j); }
         for i in 0..nx {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
             for _s in 0..ns {
-                let u: f32 = (i as f32 + rand::random::<f32>()) / nx as f32;
-                let v: f32 = (j as f32 + rand::random::<f32>()) / ny as f32;
+                let u: f64 = (i as f64 + rng.gen::<f64>()) / nx as f64;
+                let v: f64 = (j as f64 + rng.gen::<f64>()) / ny as f64;
 
                 let r = cam.get_ray(u, v);
                 let _p: Vec3 = r.point_at_parameter(2.0);
                 col += color(&r, &list);
             }
 
-            col /= ns as f32;
+            col /= ns as f64;
             let ir = (255.99 * col[0]) as i32;
             let ig = (255.99 * col[1]) as i32;
             let ib = (255.99 * col[2]) as i32;

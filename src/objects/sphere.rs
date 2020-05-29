@@ -6,20 +6,20 @@ use crate::objects::hitable::HitRecord;
 #[derive(Debug, Default)]
 pub struct Sphere {
     center: Vec3,
-    radius: f32,
+    radius: f64,
 }
 
 impl Sphere {
-    pub fn new(cen: &Vec3, r: f32) -> Sphere {
+    pub fn new(cen: &Vec3, r: f64) -> Sphere {
         Sphere { center: *cen, radius: r }
     }
 }
 
 impl Hit for Sphere {
-    fn hit(&self, r: &Ray, t_min: f32, t_max: f32, rec: &mut HitRecord) -> bool {
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         let oc = *r.origin() - self.center;
         let a = Vec3::dot(r.direction(), r.direction());
-        let b: f32 = Vec3::dot(&oc, r.direction());
+        let b: f64 = Vec3::dot(&oc, r.direction());
         let c = Vec3::dot(&oc, &oc) - self.radius * self.radius;
         let discriminant = b * b - a * c;
 

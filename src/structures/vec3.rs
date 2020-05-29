@@ -1,14 +1,14 @@
-use std::f32;
+use std::f64;
 use std::ops;
 
 #[derive(Debug, Default, Copy, Clone)]
 pub struct Vec3 {
-    elements: [f32; 3],
+    elements: [f64; 3],
 }
 
 #[allow(dead_code)]
 impl Vec3 {
-    pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
+    pub fn new(e0: f64, e1: f64, e2: f64) -> Vec3 {
         Vec3 { 
             elements: [e0, e1, e2]
         }
@@ -18,22 +18,22 @@ impl Vec3 {
         *v / v.length()
     }
 
-    pub fn dot(v1: &Vec3, v2: &Vec3) -> f32 {
+    pub fn dot(v1: &Vec3, v2: &Vec3) -> f64 {
         v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
     }
 
     // Basic accessor functions
-    pub fn x(&self) -> f32 { self.elements[0] }
-    pub fn y(&self) -> f32 { self.elements[1] }
-    pub fn z(&self) -> f32 { self.elements[2] }
-    pub fn r(&self) -> f32 { self.elements[0] }
-    pub fn g(&self) -> f32 { self.elements[1] }
-    pub fn b(&self) -> f32 { self.elements[2] }
+    pub fn x(&self) -> f64 { self.elements[0] }
+    pub fn y(&self) -> f64 { self.elements[1] }
+    pub fn z(&self) -> f64 { self.elements[2] }
+    pub fn r(&self) -> f64 { self.elements[0] }
+    pub fn g(&self) -> f64 { self.elements[1] }
+    pub fn b(&self) -> f64 { self.elements[2] }
 
-    pub fn length(&self) -> f32 {
+    pub fn length(&self) -> f64 {
         self.squared_length().sqrt()
     }
-    pub fn squared_length(&self) -> f32 {
+    pub fn squared_length(&self) -> f64 {
         self.elements[0] * self.elements[0] + self.elements[1] * self.elements[1] +
         self.elements[2] * self.elements[2]
     }
@@ -48,7 +48,7 @@ impl Vec3 {
 }
 
 impl ops::Index<usize> for Vec3 {
-    type Output = f32;
+    type Output = f64;
 
     fn index(&self, index: usize) -> &Self::Output {
         if index > 2 {
@@ -84,20 +84,20 @@ impl ops::Sub for Vec3 {
     }
 }
 
-impl ops::Mul<f32> for Vec3 {
+impl ops::Mul<f64> for Vec3 {
     type Output = Self;
 
-    fn mul(self, scalar: f32) -> Self {
+    fn mul(self, scalar: f64) -> Self {
         Self {
             elements: [ self.elements[0] * scalar, self.elements[1] * scalar, self.elements[2] * scalar ]
         }
     }
 }
 
-impl ops::Div<f32> for Vec3 {
+impl ops::Div<f64> for Vec3 {
     type Output = Self;
 
-    fn div(self, scalar: f32) -> Self::Output {
+    fn div(self, scalar: f64) -> Self::Output {
         if scalar == 0.0 {
             panic!("Cannot divide by zero");
         }
@@ -124,8 +124,8 @@ impl ops::SubAssign for Vec3 {
     }
 }
 
-impl ops::DivAssign<f32> for Vec3 {
-    fn div_assign(&mut self, rhs: f32) {
+impl ops::DivAssign<f64> for Vec3 {
+    fn div_assign(&mut self, rhs: f64) {
         let k = 1.0 / rhs;
         self.elements[0] *= k;
         self.elements[1] *= k;
