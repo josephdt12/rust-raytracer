@@ -8,27 +8,20 @@ use raytracer::objects::sphere::Sphere;
 use raytracer::objects::hitable::{Hit, HitRecord, HitableList};
 use raytracer::objects::camera::Camera;
 
-// TODO These need to be cleaned up logically
-// mod ray;
-// use ray::Ray;
-// mod sphere;
-// use sphere::Sphere;
-// mod vec3;
-// use vec3::Vec3;
-// mod hitable;
-// use hitable::{Hit, HitRecord, HitableList};
-// mod camera;
-// use camera::Camera;
+fn random_in_unit_sphere() -> Vec3 {
+    loop {
+        let p: Vec3 = Vec3::new(rand::random::<f32>(), rand::random::<f32>(), rand::random::<f32>()) -
+                    Vec3::new(1.0, 1.0, 1.0);
+        if p.squared_length() < 1.0 { return p; }
+    }
+}
 
 fn color(r: &Ray, world: &HitableList) -> Vec3 {
     let mut rec = HitRecord::default();
 
     if world.hit(r, 0.0, f32::MAX, &mut rec) {
-        return Vec3::new(
-            rec.normal.x() + 1.0,
-            rec.normal.y() + 1.0,
-            rec.normal.z() + 1.0,
-        ) * 0.5;
+        let target: Vec3 = rec.p + rec.normal + random_in_unit_sphere();
+        return color(&Ray::new(rec.p, target - rec.p), world) * 0.5;
     } else {
         let unit_direction = Vec3::unit_vector(r.direction());
         let t = 0.5 * (unit_direction.y() + 1.0);
