@@ -1,4 +1,4 @@
-use super::Vec3;
+use crate::structures::vec3::Vec3;
 
 #[derive(Debug, Default)]
 pub struct Ray {

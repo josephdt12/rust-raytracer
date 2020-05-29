@@ -1,5 +1,5 @@
-use super::Vec3;
-use super::Ray;
+use crate::structures::vec3::Vec3;
+use crate::structures::ray::Ray;
 
 #[derive(Debug, Default)]
 pub struct HitRecord {

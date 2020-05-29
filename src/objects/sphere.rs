@@ -1,7 +1,7 @@
-use super::Vec3;
-use super::Ray;
-use super::Hit;
-use super::HitRecord;
+use crate::structures::vec3::Vec3;
+use crate::structures::ray::Ray;
+use crate::objects::hitable::Hit;
+use crate::objects::hitable::HitRecord;
 
 #[derive(Debug, Default)]
 pub struct Sphere {

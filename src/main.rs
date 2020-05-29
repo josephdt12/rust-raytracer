@@ -2,17 +2,23 @@ use std::io::Write;
 use std::fs::File;
 use std::f32;
 
+use raytracer::structures::ray::Ray;
+use raytracer::structures::vec3::Vec3;
+use raytracer::objects::sphere::Sphere;
+use raytracer::objects::hitable::{Hit, HitRecord, HitableList};
+use raytracer::objects::camera::Camera;
+
 // TODO These need to be cleaned up logically
-mod ray;
-use ray::Ray;
-mod sphere;
-use sphere::Sphere;
-mod vec3;
-use vec3::Vec3;
-mod hitable;
-use hitable::{Hit, HitRecord, HitableList};
-mod camera;
-use camera::Camera;
+// mod ray;
+// use ray::Ray;
+// mod sphere;
+// use sphere::Sphere;
+// mod vec3;
+// use vec3::Vec3;
+// mod hitable;
+// use hitable::{Hit, HitRecord, HitableList};
+// mod camera;
+// use camera::Camera;
 
 fn color(r: &Ray, world: &HitableList) -> Vec3 {
     let mut rec = HitRecord::default();
