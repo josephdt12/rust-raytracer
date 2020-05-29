@@ -63,6 +63,10 @@ fn main() {
             }
 
             col /= ns as f64;
+            
+            // Do gamma correction
+            col = Vec3::new(col[0].sqrt(), col[1].sqrt(), col[2].sqrt());
+
             let ir = (255.99 * col[0]) as isize;
             let ig = (255.99 * col[1]) as isize;
             let ib = (255.99 * col[2]) as isize;
