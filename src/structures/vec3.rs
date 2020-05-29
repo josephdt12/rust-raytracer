@@ -3,14 +3,14 @@ use std::ops;
 
 #[derive(Debug, Default, Copy, Clone)]
 pub struct Vec3 {
-    e: [f32; 3],
+    elements: [f32; 3],
 }
 
 #[allow(dead_code)]
 impl Vec3 {
     pub fn new(e0: f32, e1: f32, e2: f32) -> Vec3 {
         Vec3 { 
-            e: [e0, e1, e2]
+            elements: [e0, e1, e2]
         }
     }
 
@@ -23,25 +23,25 @@ impl Vec3 {
     }
 
     // Basic accessor functions
-    pub fn x(&self) -> f32 { self.e[0] }
-    pub fn y(&self) -> f32 { self.e[1] }
-    pub fn z(&self) -> f32 { self.e[2] }
-    pub fn r(&self) -> f32 { self.e[0] }
-    pub fn g(&self) -> f32 { self.e[1] }
-    pub fn b(&self) -> f32 { self.e[2] }
+    pub fn x(&self) -> f32 { self.elements[0] }
+    pub fn y(&self) -> f32 { self.elements[1] }
+    pub fn z(&self) -> f32 { self.elements[2] }
+    pub fn r(&self) -> f32 { self.elements[0] }
+    pub fn g(&self) -> f32 { self.elements[1] }
+    pub fn b(&self) -> f32 { self.elements[2] }
 
     pub fn length(&self) -> f32 {
         self.squared_length().sqrt()
     }
     pub fn squared_length(&self) -> f32 {
-        self.e[0] * self.e[0] + self.e[1] * self.e[1] +
-        self.e[2] * self.e[2]
+        self.elements[0] * self.elements[0] + self.elements[1] * self.elements[1] +
+        self.elements[2] * self.elements[2]
     }
 
     /// Converts this vector to a unit vector.
     pub fn make_unit_vector(&mut self) {
         let k = 1.0 / self.length();
-        for val in &mut self.e {
+        for val in &mut self.elements {
             *val /= k;
         }
     }
@@ -54,13 +54,13 @@ impl ops::Index<usize> for Vec3 {
         if index > 2 {
             panic!("Invalid array access");
         }
-        &self.e[index]
+        &self.elements[index]
     }
 }
 
 impl std::cmp::PartialEq for Vec3 {
     fn eq(&self, other: &Self) -> bool {
-        self.e == other.e
+        self.elements == other.elements
     }
 }
 
@@ -69,7 +69,7 @@ impl ops::Add for Vec3 {
 
     fn add(self, other: Self) -> Self {
         Self {
-            e: [ self[0] + other[0], self[1] + other[1], self[2] + other[2] ]
+            elements: [ self[0] + other[0], self[1] + other[1], self[2] + other[2] ]
         }
     }
 }
@@ -79,7 +79,7 @@ impl ops::Sub for Vec3 {
 
     fn sub(self, other: Self) -> Self {
         Self {
-            e: [ self[0] - other[0], self[1] - other[1], self[2] - other[2] ]
+            elements: [ self[0] - other[0], self[1] - other[1], self[2] - other[2] ]
         }
     }
 }
@@ -89,7 +89,7 @@ impl ops::Mul<f32> for Vec3 {
 
     fn mul(self, scalar: f32) -> Self {
         Self {
-            e: [ self.e[0] * scalar, self.e[1] * scalar, self.e[2] * scalar ]
+            elements: [ self.elements[0] * scalar, self.elements[1] * scalar, self.elements[2] * scalar ]
         }
     }
 }
@@ -103,7 +103,7 @@ impl ops::Div<f32> for Vec3 {
         }
 
         Self {
-            e: [ self.e[0] / scalar, self.e[1] / scalar, self.e[2] / scalar ] 
+            elements: [ self.elements[0] / scalar, self.elements[1] / scalar, self.elements[2] / scalar ] 
         }
     }
 }
@@ -111,7 +111,7 @@ impl ops::Div<f32> for Vec3 {
 impl ops::AddAssign for Vec3 {
     fn add_assign(&mut self, other: Self) {
         *self = Self {
-            e: [ self.e[0] + other.e[0], self.e[1] + other.e[1], self.e[2] + other.e[2] ]
+            elements: [ self.elements[0] + other.elements[0], self.elements[1] + other.elements[1], self.elements[2] + other.elements[2] ]
         }
     }
 }
@@ -119,7 +119,7 @@ impl ops::AddAssign for Vec3 {
 impl ops::SubAssign for Vec3 {
     fn sub_assign(&mut self, other: Self) {
         *self = Self {
-            e: [ self.e[0] - other.e[0], self.e[1] - other.e[1], self.e[2] - other.e[2] ]
+            elements: [ self.elements[0] - other.elements[0], self.elements[1] - other.elements[1], self.elements[2] - other.elements[2] ]
         }
     }
 }
@@ -127,9 +127,9 @@ impl ops::SubAssign for Vec3 {
 impl ops::DivAssign<f32> for Vec3 {
     fn div_assign(&mut self, rhs: f32) {
         let k = 1.0 / rhs;
-        self.e[0] *= k;
-        self.e[1] *= k;
-        self.e[2] *= k;
+        self.elements[0] *= k;
+        self.elements[1] *= k;
+        self.elements[2] *= k;
     }
 }
 
