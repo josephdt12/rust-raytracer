@@ -43,14 +43,23 @@ fn main() {
     file.write(header.as_bytes()).unwrap();
 
     let list = HitableList::new(vec![
-        Box::new(Sphere::new(&Vec3::new(0.0, 0.0, -1.0), 0.5)),
-        Box::new(Sphere::new(&Vec3::new(0.0, -100.5, -1.0), 100.0)),
+        Box::new(
+            Sphere::new(&Vec3::new(0.0, 0.0, -1.0), 0.5)
+        ),
+        Box::new(
+            Sphere::new(&Vec3::new(0.0, -100.5, -1.0), 100.0)
+        ),
+        Box::new(
+            Sphere::new(&Vec3::new(1.0, 0.0, -1.0), 0.5)
+        ),
+        Box::new(
+            Sphere::new(&Vec3::new(-1.0, 0.0, -1.0), 0.5)
+        ),
     ]);
 
     let cam = Camera::new();
 
     for j in (0..ny - 1).rev() {
-        if j % 30 == 0 { println!("Y: {}", j); }
         for i in 0..nx {
             let mut col = Vec3::new(0.0, 0.0, 0.0);
             for _s in 0..ns {

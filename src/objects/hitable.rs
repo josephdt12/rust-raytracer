@@ -21,10 +21,6 @@ impl HitableList {
     pub fn new(l: Vec<Box<dyn Hitable>>) -> Self {
         HitableList { list: l }
     }
-
-    pub fn add_hitable(hitable: &dyn Hitable) {
-
-    }
 }
 
 impl Hitable for HitableList {
