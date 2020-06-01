@@ -8,22 +8,26 @@ pub struct HitRecord {
     pub normal: Vec3,
 }
 
-pub trait Hit {
+pub trait Hitable {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
 }
 
 #[derive(Default)]
 pub struct HitableList {
-    list: Vec<Box<dyn Hit>>,
+    list: Vec<Box<dyn Hitable>>,
 }
 
 impl HitableList {
-    pub fn new(l: Vec<Box<dyn Hit>>) -> Self {
+    pub fn new(l: Vec<Box<dyn Hitable>>) -> Self {
         HitableList { list: l }
+    }
+
+    pub fn add_hitable(hitable: &dyn Hitable) {
+
     }
 }
 
-impl Hit for HitableList {
+impl Hitable for HitableList {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         let mut temp_rec = HitRecord::default();
         let mut hit_anything = false;

@@ -6,7 +6,7 @@ use rand::Rng;
 use raytracer::structures::ray::Ray;
 use raytracer::structures::vec3::Vec3;
 use raytracer::objects::sphere::Sphere;
-use raytracer::objects::hitable::{Hit, HitRecord, HitableList};
+use raytracer::objects::hitable::{Hitable, HitRecord, HitableList};
 use raytracer::objects::camera::Camera;
 
 fn random_in_unit_sphere() -> Vec3 {

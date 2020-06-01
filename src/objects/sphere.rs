@@ -1,6 +1,6 @@
 use crate::structures::vec3::Vec3;
 use crate::structures::ray::Ray;
-use crate::objects::hitable::Hit;
+use crate::objects::hitable::Hitable;
 use crate::objects::hitable::HitRecord;
 
 #[derive(Debug, Default)]
@@ -15,7 +15,7 @@ impl Sphere {
     }
 }
 
-impl Hit for Sphere {
+impl Hitable for Sphere {
     fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
         let oc = *r.origin() - self.center;
         let a = Vec3::dot(r.direction(), r.direction());
