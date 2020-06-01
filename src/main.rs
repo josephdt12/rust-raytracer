@@ -11,22 +11,13 @@ use raytracer::objects::camera::Camera;
 
 use raytracer::materials::Scatterable;
 
-fn random_in_unit_sphere() -> Vec3 {
-    let mut rng = rand::thread_rng();
-    loop {
-        let p: Vec3 = Vec3::new(rng.gen::<f64>(), rng.gen::<f64>(), rng.gen::<f64>()) -
-                    Vec3::new(1.0, 1.0, 1.0);
-        if p.squared_length() < 1.0 { return p; }
-    }
-}
-
 fn color(r: &Ray, world: &HitableList, depth: isize) -> Vec3 {
     let mut rec = HitRecord::default();
 
     if world.hit(r, 0.0001, f64::MAX, &mut rec) {
-        let (isScattered, scattered_ray, attentuation) = rec.material().scatter(r, rec);
+        let (is_scattered, scattered_ray, attentuation) = rec.material().scatter(r, &rec);
 
-        if depth < 50 && isScattered {
+        if depth < 50 && is_scattered {
             return color(&scattered_ray, world, depth + 1) * attentuation;
         } else {
             return Vec3::new(0.0, 0.0, 0.0);
