@@ -15,7 +15,7 @@ impl HitRecord {
 }
 
 pub trait Hitable {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool;
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> (bool, HitRecord);
 }
 
 #[derive(Default)]
@@ -30,21 +30,24 @@ impl HitableList {
 }
 
 impl Hitable for HitableList {
-    fn hit(&self, r: &Ray, t_min: f64, t_max: f64, rec: &mut HitRecord) -> bool {
-        let mut temp_rec = HitRecord::default();
+    fn hit(&self, r: &Ray, t_min: f64, t_max: f64) -> (bool, HitRecord) {
+        let mut hit_record = HitRecord::default();
         let mut hit_anything = false;
         let mut closest_so_far = t_max;
 
         for hitable in self.list.iter() {
-            if hitable.hit(r, t_min, closest_so_far, &mut temp_rec) {
+            let (is_hit, temp_rec) = hitable.hit(r, t_min, closest_so_far);
+
+            if is_hit {
                 hit_anything = true;
                 closest_so_far = temp_rec.t;
-                rec.t = temp_rec.t;
-                rec.p = temp_rec.p;
-                rec.normal = temp_rec.normal;
+                hit_record.t = temp_rec.t;
+                hit_record.p = temp_rec.p;
+                hit_record.normal = temp_rec.normal;
+                hit_record.material = temp_rec.material;
             }
         }
 
-        hit_anything
+        (hit_anything, hit_record)
     }
 }

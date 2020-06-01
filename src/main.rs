@@ -9,13 +9,14 @@ use raytracer::objects::sphere::Sphere;
 use raytracer::objects::hitable::{Hitable, HitRecord, HitableList};
 use raytracer::objects::camera::Camera;
 
-use raytracer::materials::Scatterable;
+use raytracer::materials::{Material, Scatterable};
+use raytracer::materials::lambertian::Lambertian;
 
 fn color(r: &Ray, world: &HitableList, depth: isize) -> Vec3 {
-    let mut rec = HitRecord::default();
+    let (is_hit, hit_record) = world.hit(r, 0.0001, f64::MAX);
 
-    if world.hit(r, 0.0001, f64::MAX, &mut rec) {
-        let (is_scattered, scattered_ray, attentuation) = rec.material().scatter(r, &rec);
+    if is_hit {
+        let (is_scattered, scattered_ray, attentuation) = hit_record.material().scatter(r, &hit_record);
 
         if depth < 50 && is_scattered {
             return color(&scattered_ray, world, depth + 1) * attentuation;
@@ -42,17 +43,27 @@ fn main() {
 
     let list = HitableList::new(vec![
         Box::new(
-            Sphere::new(&Vec3::new(0.0, 0.0, -1.0), 0.5)
+            Sphere::new(
+                &Vec3::new(0.0, 0.0, -1.0),
+                0.5,
+                Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.3, 0.3))),
+            )
         ),
         Box::new(
-            Sphere::new(&Vec3::new(0.0, -100.5, -1.0), 100.0)
+            Sphere::new(
+                &Vec3::new(0.0, -100.5, -1.0),
+                100.0,
+                Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.8, 0.0))),
+            )
         ),
+        /*
         Box::new(
             Sphere::new(&Vec3::new(1.0, 0.0, -1.0), 0.5)
         ),
         Box::new(
             Sphere::new(&Vec3::new(-1.0, 0.0, -1.0), 0.5)
         ),
+        */
     ]);
 
     let cam = Camera::new();
