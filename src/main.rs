@@ -9,6 +9,8 @@ use raytracer::objects::sphere::Sphere;
 use raytracer::objects::hitable::{Hitable, HitRecord, HitableList};
 use raytracer::objects::camera::Camera;
 
+use raytracer::materials::Scatterable;
+
 fn random_in_unit_sphere() -> Vec3 {
     let mut rng = rand::thread_rng();
     loop {
@@ -18,12 +20,17 @@ fn random_in_unit_sphere() -> Vec3 {
     }
 }
 
-fn color(r: &Ray, world: &HitableList) -> Vec3 {
+fn color(r: &Ray, world: &HitableList, depth: isize) -> Vec3 {
     let mut rec = HitRecord::default();
 
     if world.hit(r, 0.0001, f64::MAX, &mut rec) {
-        let target: Vec3 = rec.p + rec.normal + random_in_unit_sphere();
-        return color(&Ray::new(rec.p, target - rec.p), world) * 0.5;
+        let (isScattered, scattered_ray, attentuation) = rec.material().scatter(r, rec);
+
+        if depth < 50 && isScattered {
+            return color(&scattered_ray, world, depth + 1) * attentuation;
+        } else {
+            return Vec3::new(0.0, 0.0, 0.0);
+        }
     } else {
         let unit_direction = Vec3::unit_vector(r.direction());
         let t = 0.5 * (unit_direction.y() + 1.0);
@@ -68,7 +75,7 @@ fn main() {
 
                 let r = cam.get_ray(u, v);
                 let _p: Vec3 = r.point_at_parameter(2.0);
-                col += color(&r, &list);
+                col += color(&r, &list, 0);
             }
 
             col /= ns as f64;

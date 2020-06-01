@@ -1,11 +1,17 @@
 use crate::structures::vec3::Vec3;
 use crate::structures::ray::Ray;
+use crate::materials::Material;
 
 #[derive(Debug, Default)]
 pub struct HitRecord {
     pub t: f64,
     pub p: Vec3,
     pub normal: Vec3,
+    pub material: Material,
+}
+
+impl HitRecord {
+    pub fn material(&self) -> Material { self.material }
 }
 
 pub trait Hitable {
