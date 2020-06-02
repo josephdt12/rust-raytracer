@@ -6,11 +6,12 @@ use rand::Rng;
 use raytracer::structures::ray::Ray;
 use raytracer::structures::vec3::Vec3;
 use raytracer::objects::sphere::Sphere;
-use raytracer::objects::hitable::{Hitable, HitRecord, HitableList};
+use raytracer::objects::hitable::{Hitable, HitableList};
 use raytracer::objects::camera::Camera;
 
 use raytracer::materials::{Material, Scatterable};
 use raytracer::materials::lambertian::Lambertian;
+use raytracer::materials::metal::Metal;
 
 fn color(r: &Ray, world: &HitableList, depth: isize) -> Vec3 {
     let (is_hit, hit_record) = world.hit(r, 0.0001, f64::MAX);
@@ -34,9 +35,9 @@ fn main() {
     let mut rng = rand::thread_rng();
     let mut file = File::create("test.ppm").unwrap();
 
-    let nx = 200;
-    let ny = 100;
-    let ns: isize = 100;
+    let nx = 300;
+    let ny = 150;
+    let ns: isize = 150;
 
     let header = format!("P3\n{} {}\n255\n", nx, ny);
     file.write(header.as_bytes()).unwrap();
@@ -56,14 +57,20 @@ fn main() {
                 Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.8, 0.0))),
             )
         ),
-        /*
         Box::new(
-            Sphere::new(&Vec3::new(1.0, 0.0, -1.0), 0.5)
+            Sphere::new(
+                &Vec3::new(1.0, 0.0, -1.0),
+                0.5,
+                Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)),
+            )
         ),
         Box::new(
-            Sphere::new(&Vec3::new(-1.0, 0.0, -1.0), 0.5)
+            Sphere::new(
+                &Vec3::new(-1.0, 0.0, -1.0),
+                0.5,
+                Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0)),
+            )
         ),
-        */
     ]);
 
     let cam = Camera::new();
