@@ -11,6 +11,7 @@ pub struct HitRecord {
 }
 
 impl HitRecord {
+    pub fn normal(&self) -> &Vec3 { &self.normal }
     pub fn material(&self) -> Material { self.material }
 }
 

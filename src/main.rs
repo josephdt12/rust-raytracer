@@ -12,6 +12,7 @@ use raytracer::objects::camera::Camera;
 use raytracer::materials::{Material, Scatterable};
 use raytracer::materials::lambertian::Lambertian;
 use raytracer::materials::metal::Metal;
+use raytracer::materials::dielectric::Dielectric;
 
 fn color(r: &Ray, world: &HitableList, depth: isize) -> Vec3 {
     let (is_hit, hit_record) = world.hit(r, 0.0001, f64::MAX);
@@ -35,9 +36,9 @@ fn main() {
     let mut rng = rand::thread_rng();
     let mut file = File::create("test.ppm").unwrap();
 
-    let nx = 300;
-    let ny = 150;
-    let ns: isize = 150;
+    let nx = 200;
+    let ny = 100;
+    let ns: isize = 100;
 
     let header = format!("P3\n{} {}\n255\n", nx, ny);
     file.write(header.as_bytes()).unwrap();
@@ -47,7 +48,7 @@ fn main() {
             Sphere::new(
                 &Vec3::new(0.0, 0.0, -1.0),
                 0.5,
-                Material::Lambertian(Lambertian::new(Vec3::new(0.8, 0.3, 0.3))),
+                Material::Lambertian(Lambertian::new(Vec3::new(0.1, 0.2, 0.5))),
             )
         ),
         Box::new(
@@ -61,14 +62,21 @@ fn main() {
             Sphere::new(
                 &Vec3::new(1.0, 0.0, -1.0),
                 0.5,
-                Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2), 0.3)),
+                Material::Metal(Metal::new(Vec3::new(0.8, 0.6, 0.2), 1.0)),
             )
         ),
         Box::new(
             Sphere::new(
                 &Vec3::new(-1.0, 0.0, -1.0),
                 0.5,
-                Material::Metal(Metal::new(Vec3::new(0.8, 0.8, 0.8), 1.0)),
+                Material::Dielectric(Dielectric::new(1.5)),
+            )
+        ),
+        Box::new(
+            Sphere::new(
+                &Vec3::new(-1.0, 0.0, -1.0),
+                -0.45,
+                Material::Dielectric(Dielectric::new(1.5)),
             )
         ),
     ]);

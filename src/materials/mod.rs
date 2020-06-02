@@ -4,14 +4,17 @@ use crate::structures::vec3::Vec3;
 
 pub mod lambertian;
 pub mod metal;
+pub mod dielectric;
 
 use self::lambertian::Lambertian;
 use self::metal::Metal;
+use self::dielectric::Dielectric;
 
 #[derive(Debug, Clone, Copy)]
 pub enum Material {
     Lambertian(Lambertian),
     Metal(Metal),
+    Dielectric(Dielectric),
 }
 
 impl Default for Material {
@@ -25,6 +28,7 @@ impl Scatterable for Material {
         match *self {
             Material::Lambertian(ref inner) => inner.scatter(ray_in, hit_record),
             Material::Metal(ref inner) => inner.scatter(ray_in, hit_record),
+            Material::Dielectric(ref inner) => inner.scatter(ray_in, hit_record),
         }
     }
 }

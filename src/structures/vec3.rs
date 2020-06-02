@@ -147,6 +147,16 @@ impl ops::DivAssign<f64> for Vec3 {
     }
 }
 
+impl ops::Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Vec3 {
+            elements: [ -self.elements[0], -self.elements[1], -self.elements[2] ]
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Vec3;
